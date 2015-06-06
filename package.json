@@ -1,0 +1,27 @@
+{
+  "name": "ProbeResponseAPI",
+  "version": "0.0.1",
+  "description": "API for fetching and saving data for the Man in the Middle Project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "~4.9.x",
+    "jade": "*",
+    "connect": "*",
+    "mongoose": "~3.8.x",
+    "body-parser": "*",
+    "bcrypt-nodejs": "*",
+    "path": "*"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "mongo"
+  ],
+  "license": "MIT"
+}
