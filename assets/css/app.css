@@ -26,17 +26,25 @@ body {
 #victims {
   opacity: 0;
   overflow: hidden;
-  -webkit-transition: opacity .3s ease-in-out;
-  transition: opacity .3s ease-in-out;
 }
 
-
+#topBar {
+  height: 20px;
+  width: 100%;
+  display: block;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  background-color: black;
+  -webkit-transition: background-color .6s ease-in-out;
+  transition: background-color .6s ease-in-out;
+}
 
 header {
   padding: 18px 0 0 0;
   width: 100%;
   position: relative;
-  background-color: black;
+  /*background-color: black;*/
   -webkit-transition: background-color .6s ease-in-out;
   transition: background-color .6s ease-in-out;
 }
@@ -69,4 +77,9 @@ ul {
   list-style: none;
   margin: 12px 0 22px 40px;
   padding: 0;
+}
+
+section, li, #victims {
+  -webkit-transition: opacity .3s ease-in-out;
+  transition: opacity .3s ease-in-out;
 }

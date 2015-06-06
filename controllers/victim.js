@@ -4,6 +4,12 @@
  */
 var Victim = require('../models/victim');
 var probeRequestController = require('./probeRequest');
+var moment = require('moment');
+var io;
+
+exports.setupSocket = function(socket) {
+  io = socket;
+}
 
 
 /**
@@ -20,8 +26,6 @@ exports.postVictim = function(req, res) {
   var ssidSignal = req.body.ssidSignal;
   var ssidVolume = req.body.ssidVolume;
   var ssidHue = req.body.ssidHue;
-
-  console.log(macAddress);
 
   Victim.findOne({ 
     macAddress: macAddress 
@@ -58,11 +62,37 @@ exports.postVictim = function(req, res) {
         if (err)
           return err;
 
+        var updateOrCreate = victim.probeRequests.length == 1 ? true : false;
+        emitVictim(victim, probeRequest, ssidName, updateOrCreate);
         res.json({ message: 'SUCCES: '+ victim.macAddress +' added to database' });
       });
     });
   });
 };
+
+
+/**
+ *  Updates or creates a new victim after a user has connected.
+ *  @param Object   victim
+ *  @param Object   probeRequest 
+ *  @param String   ssid
+ *  @param Boolean  newVictim
+ */
+function emitVictim(victim, probeRequest, ssid, newVictim) {
+  var diff = moment(victim.lastSeen).diff(moment(victim.firstSeen));
+  var knownFor = 'Known for '+ moment.duration(diff).humanize() +' ';
+  var on = moment(probeRequest.date).format("DD-MM-YY HH:MM:SS");
+  var what = ssid ? ssid : 'Something';
+  var line = 'On '+ on +' Searched for '+ what;
+
+  var updateOrCreate = newVictim ? 'newVictim' : 'updateVictim';
+  io.emit(updateOrCreate, {
+    _id: victim._id,
+    hostName: victim.hostName ? victim.hostName : 'Someone',
+    knownFor: knownFor,
+    probeRequest: line
+  });
+}
 
 
 /**

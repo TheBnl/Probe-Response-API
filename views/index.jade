@@ -8,6 +8,7 @@ html(lang="en")
       include ../assets/css/app.css
       
   body
+    #topBar
     #loading
       span Loading...
     #victims
@@ -29,25 +30,22 @@ html(lang="en")
               ul
                 each probe in victim.probeRequests
                   if probe.ssid
-                    li 
-                      span='On '+ moment(probe.date).format("DD-MM-YY HH:MM:SS") +' '
-                      span Searched for 
-                      if probe.ssid.name
-                        span #{probe.ssid.name}
-                      else
-                        span Something
-      
+                    - var on = moment(probe.date).format("DD-MM-YY HH:MM:SS")
+                    - var ssid = probe.ssid.name ? probe.ssid.name : 'Something'
+                    - var line = 'On '+ on +' Searched for '+ ssid 
+                    li #{line}
+                     
     // socket io
-    script(src='/socket.io/socket.io.js')    
+    script(src='/socket.io/socket.io.js')
     // jquery
     script(type='text/javascript')
       include ../assets/js/libs/jquery/dist/jquery.min.js
     // waypoints
-    script(type='text/javascript')
-      include ../assets/js/libs/waypoints/lib/jquery.waypoints.min.js
+    //script(type='text/javascript')
+    //  include ../assets/js/libs/waypoints/lib/jquery.waypoints.min.js
     // waypoints shortcup sticky
-    script(type='text/javascript')
-      include ../assets/js/libs/waypoints/lib/shortcuts/sticky.min.js
+    //script(type='text/javascript')
+    //  include ../assets/js/libs/waypoints/lib/shortcuts/sticky.min.js
     // main app
     script(type='text/javascript')
       include ../assets/js/app.js

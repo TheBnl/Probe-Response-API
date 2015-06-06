@@ -81,9 +81,10 @@ emitRouter.route('/color')
   });
 
 io.on('connection', function(socket){
-    console.log('client connected with id:', socket.id, 'and ip:', socket.conn.remoteAddress);
+  console.log('client connected with id:', socket.id, 'and ip:', socket.conn.remoteAddress);
 });
 
+victimController.setupSocket(io);
 
 /**
  *  Create endpoint handlers for /victims
@@ -92,7 +93,7 @@ io.on('connection', function(socket){
  */
 apiRouter.route('/victims')
   .head(cors(), function(req, res){ res.send(204) })
-  .post(cors(), victimController.postVictim)
+  .post(cors(), victimController.postVictim )
   .get(cors(), victimController.getVictims);
 
 
