@@ -89,9 +89,9 @@ function appendNewVictim(victim) {
         '<h3>'+ knownFor +'</h3>' +
       '</header>' +
       '<main>' +
-        '<ul>' +
-          '<li>'+ probeRequest + '</li>' +
-        '</ul>' +
+        '<ul>';
+          if (probeRequest != null) html + '<li>'+ probeRequest + '</li>';
+ html + '</ul>' +
       '</main>' +
     '</section>';
 

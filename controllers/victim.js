@@ -49,25 +49,36 @@ exports.postVictim = function(req, res) {
       probeRequests = [];
     }
 
-    probeRequestController.create({
-      ssid: ssidName, 
-      macAddress: ssidMacAddress, 
-      signal: ssidSignal, 
-      volume: ssidVolume, 
-      hue: ssidHue
-    }, function(probeRequest) {
-      probeRequests.push(probeRequest);
-      victim.probeRequests = probeRequests;
+    if (ssidName != undefined) {
+      probeRequestController.create({
+        ssid: ssidName, 
+        macAddress: ssidMacAddress, 
+        signal: ssidSignal, 
+        volume: ssidVolume, 
+        hue: ssidHue
+      }, function(probeRequest) {
+        probeRequests.push(probeRequest);
+        victim.probeRequests = probeRequests;
+        victim.save(function(err, victim) {
+          if (err)
+            return err;
+
+          var updateOrCreate = victim.probeRequests.length <= 1 ? true : false;
+          emitVictim(victim, probeRequest, ssidName, updateOrCreate);
+          res.json({ message: 'SUCCES: '+ victim.macAddress +' added to database' });
+        });
+      });
+    } else {
       victim.save(function(err, victim) {
         if (err)
           return err;
 
-        var updateOrCreate = victim.probeRequests.length == 1 ? true : false;
-        emitVictim(victim, probeRequest, ssidName, updateOrCreate);
+        emitVictim(victim, undefined, undefined, true);
         res.json({ message: 'SUCCES: '+ victim.macAddress +' added to database' });
       });
-    });
-  });
+    }
+
+  });  
 };
 
 
@@ -81,9 +92,9 @@ exports.postVictim = function(req, res) {
 function emitVictim(victim, probeRequest, ssid, newVictim) {
   var diff = moment(victim.lastSeen).diff(moment(victim.firstSeen));
   var knownFor = 'Known for '+ moment.duration(diff).humanize() +' ';
-  var on = moment(probeRequest.date).format("DD-MM-YY HH:MM:SS");
+  var on = probeRequest != undefined ? moment(probeRequest.date).format("DD-MM-YY HH:MM:SS") : null;
   var what = ssid ? ssid : 'Something';
-  var line = 'On '+ on +' Searched for '+ what;
+  var line = probeRequest != undefined ? 'On '+ on +' Searched for '+ what : null;
 
   var updateOrCreate = newVictim ? 'newVictim' : 'updateVictim';
   io.emit(updateOrCreate, {
