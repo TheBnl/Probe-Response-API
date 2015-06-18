@@ -13,7 +13,7 @@ var LocationSchema = require('./location').schema;
 
 var SSIDSchema = new Schema({
   name: String,
-  macAddress: String,
+  macAddress: { type: String, lowercase: true },
   locations: [LocationSchema]
 });
 

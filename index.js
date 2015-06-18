@@ -23,6 +23,7 @@ var moment = require('moment');
  */
 var victimController = require('./controllers/victim');
 var ssidController = require('./controllers/SSID');
+var searchController = require('./controllers/Search');
 
 
 /**
@@ -47,6 +48,7 @@ app.locals.moment = moment;
 var apiRouter = express.Router();
 var baseRouter = express.Router();
 var emitRouter = express.Router();
+var searchRouter = express.Router();
 
 
 /**
@@ -56,12 +58,27 @@ var emitRouter = express.Router();
  *        Data van de kijker?  
  */
 baseRouter.route('/')
+  .head(cors(), function(req, res){ res.send(204) })
   .get(function(req, res) {
-    victimController.getVictimsAsData('24:e3:14:5a:07:76', function(data) {
+    victimController.getVictimsAsData(function(data) {
 
       res.render('index', {data: data});
     });
-  })
+  });
+
+
+searchRouter.route('/')
+  .head(function(req, res){ res.send(204) })
+  .get(function(req, res) {
+    var ajax = req.xhr;
+    searchController.getResults(req.query, function(data) {
+      if (ajax) {
+        res.render('searchResponse', {data: data});
+      } else {
+        res.render('index', {data: data});
+      }
+    });
+  });
 
 
 /**
@@ -85,6 +102,7 @@ io.on('connection', function(socket){
 });
 
 victimController.setupSocket(io);
+
 
 /**
  *  Create endpoint handlers for /victims
@@ -111,8 +129,20 @@ apiRouter.route('/victimswithhostnames')
 apiRouter.route('/victims/:mac')
   .head(cors(), function(req, res){ res.send(204) })
   .get(cors(), victimController.getVictim)
-  .put(cors(), victimController.putVictim)
-  .delete(cors(), victimController.deleteVictim);
+  .put(cors(), victimController.putVictim);
+  //.delete(cors(), victimController.deleteVictim);
+
+
+/**
+ *  Create endpoint handlers for /victims/id/:mac
+ *  @method   GET     Get one victim object by it's mac address
+ *  @method   PUT     Update one victim object by it's mac address  TODO: check if obsolete method
+ *  @method   DELETE  Delete one victim object by it's mac address  TODO: connecties met andere documetnen opschonen na delete
+ */
+apiRouter.route('/victims/id/:id')
+  .head(cors(), function(req, res){ res.send(204) })
+  .get(cors(), victimController.getVictimByID)
+  .delete(cors(), victimController.deleteVictimByID);
 
 
 /**
@@ -139,6 +169,7 @@ apiRouter.route('/ssids/:mac')
  */
 app.use('/api', cors(), apiRouter);
 app.use('/emit', cors(), emitRouter);
+app.use('/search', cors(), searchRouter);
 app.use('/', baseRouter);
 
 

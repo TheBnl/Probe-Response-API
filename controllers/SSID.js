@@ -3,7 +3,7 @@
  *  @author Bram de Leeuw
  */
 
-var wigle = require('wigle');
+//var wigle = require('wigle');
 var SSID = require('../models/SSID');
 var locationController = require('./location');
 var wigleUser = process.env.WIGLEUSERNAME;
@@ -14,14 +14,14 @@ var wiglePass = process.env.WIGLEPASSWORD;
  *  Login to the Wigle.net service
  *  @param   Object err
  *  @param   Object results
- */
+ 
 wigle.login(wigleUser, wiglePass, function (err, results) {
   if(err)
     console.log(err);
   
   console.log('WIGLE:',results);
 });
-
+*/
 
 /**
  *  Find or Create a new SSID
@@ -55,7 +55,7 @@ exports.newSSID = function(options, callback) {
         callback(saveData);
       });
     }
-
+    /*
     else if (name != undefined) {
       getLocation(name, function(locations) {
         var ssid = new SSID();
@@ -70,6 +70,7 @@ exports.newSSID = function(options, callback) {
         });
       });
     }
+    */
   });
 }
 
@@ -84,13 +85,13 @@ exports.newSSID = function(options, callback) {
  *  TODO: Bepalen hoe om te gaan met een lege lijst
  *  @param    String  name
  *  @callback returnLocations
- */
+ 
 function getLocation(name, returnLocations) {
   var locations = [];
 
   /** 
    * Keep the search box in the netherlands lat 50.7500 – 53.5000 lon 2.5000 – 7.2000
-   */
+   *
   wigle.search({
     latrange1: '50.7500', // min
     latrange2: '53.5000', // max
@@ -138,7 +139,7 @@ function getLocation(name, returnLocations) {
     
   });
 }
-
+*/
 
 /**
  *  Get all SSIDs from the database

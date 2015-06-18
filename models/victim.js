@@ -15,7 +15,7 @@ var ProbeRequest = require('./probeRequest').schema;
 
 var VictimSchema = new Schema({
   hostName: String,
-  macAddress: String,
+  macAddress: { type: String, lowercase: true },
   firstSeen: Date,
   lastSeen: Date,
   probeRequests: [ProbeRequest]

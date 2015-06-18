@@ -1,10 +1,15 @@
+* {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;  
+}
+
 html, body {
   background-color: black;
   font-family: sans-serif;
   color: white;
   font-weight: 100;
   font-size: 24px;
-  line-height: 26px;
+  line-height: 28px;
   margin: 0;
   padding: 0;
   -webkit-transition: background-color .6s ease-in-out;
@@ -15,7 +20,7 @@ body {
   /*padding: 18px 0 0 0;*/
 }
 
-#loading {
+#loading, #nothingfound {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -26,10 +31,11 @@ body {
 #victims {
   opacity: 0;
   overflow: hidden;
+  padding-top: 64px;
 }
 
 #topBar {
-  height: 20px;
+  height: 0px;
   width: 100%;
   display: block;
   position: fixed;
@@ -63,7 +69,7 @@ h2, h3 {
   color: white;
   font-weight: 100;
   font-size: 24px;
-  line-height: 26px;
+  line-height: 28px;
   margin: 4px 6px;
 }
 
@@ -73,13 +79,127 @@ h3 {
   margin-left: -15px;
 }
 
+h2 span {
+  display: none;
+}
+
 ul {
   list-style: none;
-  margin: 12px 0 22px 40px;
+  margin: 7px 0 14px 35px;
   padding: 0;
 }
 
 section, li, #victims {
   -webkit-transition: opacity .3s ease-in-out;
   transition: opacity .3s ease-in-out;
+}
+
+#searchbar {
+  width: 100%;
+  display: block;
+  padding: 24px 6px 4px 6px;
+  box-shadow: 0px 12px 24px rgb(0, 0, 0);
+  background-color: black;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  -webkit-transition: background-color .6s ease-in-out, box-shadow .6s ease-in-out;
+  transition: background-color .6s ease-in-out, box-shadow .6s ease-in-out;
+}
+
+#searchbar form {
+  position: relative;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+#searchbar form label {
+  margin-right: 7px;
+  line-height: 36px;
+  position: relative;
+  display: inline-block;
+  float: left;
+}
+
+#searchbar form select {
+  border: 2px solid white;
+  background-color: transparent;
+  color: white;
+  border-radius: 4px;
+  font-size: 18px;
+  margin-right: 7px;
+  position: relative;
+  display: inline-block;
+  float: left;
+}
+
+#searchbar form input {
+  position: relative;
+  display: inline-block;
+  float: left;
+}
+
+#searchbar form input[type="text"] {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  font-size: 18px;
+  line-height: 24px;
+  color: white;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid white;
+  border-radius: 0;
+  margin-right: 7px;
+}
+
+#searchbar form input[type="submit"] {
+  border: 2px solid white;
+  background-color: transparent;
+  color: white;
+  font-size: 18px;
+  line-height: 19px;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+@media screen and (max-width: 640px) {
+  body {
+    font-size: 16px;
+    line-height: 22px;
+  }
+  h2, h3 {
+    font-size: 16px;
+    line-height: 22px;
+    margin: 3px 3px;
+  }
+
+  h2 span {
+    display: inline;
+  }
+  h3 {
+    position: relative;
+    left: inherit;
+    margin-left: 0;
+    text-transform: lowercase;
+  }
+  #searchbar {
+    padding: 22px 3px 2px 3px;
+  }
+  #searchbar form input, #searchbar form select {
+    font-size: 12px !important;
+  }
+  ul {
+    list-style: none;
+    margin: 3px 0 7px 18px;
+    padding: 0;
+  }
+  header {
+    padding-top: 10px;
+  }
 }

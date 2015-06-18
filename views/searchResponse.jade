@@ -1,0 +1,29 @@
+- var dataIsEmpty = data.length === 0 ? true : false
+if (!dataIsEmpty)  
+  each victim in data
+    - var empty = victim.probeRequests.length === 0 ? true : false
+    if (!empty)
+      section(id=victim._id)
+        header
+          if victim.hostName
+            h2 #{victim.hostName}
+              span ,
+          else
+            h2 Someone
+              span ,
+
+          - var a = moment(victim.lastSeen)
+          - var b = moment(victim.firstSeen)
+          - var diff = a.diff(b)
+          h3='Known for '+ moment.duration(diff).humanize() +' '
+        
+        main
+          ul
+            each probe in victim.probeRequests
+              if probe.ssid
+                - var on = moment(probe.date).format("dddd, MMMM Do") 
+                - var ssid = probe.ssid.name ? probe.ssid.name : 'Something'
+                - var line = 'On '+ on +' searched for '+ ssid 
+                li #{line}
+else
+  #nothingfound No data found that matched your search query

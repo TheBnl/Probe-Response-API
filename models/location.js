@@ -13,7 +13,7 @@ var StreetViewImage = require('./streetViewImage').schema;
 
 var LocationSchema = new Schema({
   name: String,
-  macAddress: String,
+  macAddress: { type: String, lowercase: true },
   location: {type: [Number], index: '2d'},
   streetView: [StreetViewImage]
 });

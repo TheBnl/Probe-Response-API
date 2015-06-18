@@ -1,25 +1,43 @@
 doctype html
 html(lang="en")
   head
-    meta( name="viewport" content="width=device-width,initial-scale=1" )
+    meta( name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" )
     meta( name="apple-mobile-web-app-capable" content="yes" )
     meta( name="apple-mobile-web-app-status-bar-style" content="black-translucent" )
+    meta( name="apple-mobile-web-app-title" content="Something" )
+    link( rel="apple-touch-icon" href="../assets/icon/touch-icon-iphone.png" )
+    link( rel="apple-touch-icon" sizes="76x76" href="/icon/touch-icon-ipad.png" )
+    link( rel="apple-touch-icon" sizes="120x120" href="/icon/touch-icon-iphone-retina.png" )
+    link( rel="apple-touch-icon" sizes="152x152" href="/icon/touch-icon-ipad-retina.png" )
     style
       include ../assets/css/app.css
       
   body
-    #topBar
+    //#topBar
     #loading
       span Loading...
+    #searchbar
+      form(id="searchform" action="/search" method="GET" enctype="application/x-www-form-urlencoded")
+        label(for="search") Find by:
+        select(id="findby" name="findby")
+          option(value="ssid") Wireless Address
+          option(value="mac") Mac Address
+          option(value="host") Device Name
+        input(type="text" id="search" name="searchfor" placeholder="macaddress, hostname or wireless network name")
+        input(type="submit" value="Search")
+
     #victims
       each victim in data
-        if victim.probeRequests
-          section(id=victim._id class="waypoint")
+        - var empty = victim.probeRequests.length === 0 ? true : false
+        if (!empty)
+          section(id=victim._id)
             header
               if victim.hostName
                 h2 #{victim.hostName}
+                  span ,
               else
                 h2 Someone
+                  span ,
 
               - var a = moment(victim.lastSeen)
               - var b = moment(victim.firstSeen)
@@ -30,22 +48,18 @@ html(lang="en")
               ul
                 each probe in victim.probeRequests
                   if probe.ssid
-                    - var on = moment(probe.date).format("DD-MM-YY HH:MM:SS")
+                    - var on = moment(probe.date).format("dddd, MMMM Do") 
                     - var ssid = probe.ssid.name ? probe.ssid.name : 'Something'
-                    - var line = 'On '+ on +' Searched for '+ ssid 
+                    - var line = 'On '+ on +' searched for '+ ssid 
                     li #{line}
-                     
-    // socket io
+
     script(src='/socket.io/socket.io.js')
-    // jquery
     script(type='text/javascript')
       include ../assets/js/libs/jquery/dist/jquery.min.js
-    // waypoints
-    //script(type='text/javascript')
-    //  include ../assets/js/libs/waypoints/lib/jquery.waypoints.min.js
-    // waypoints shortcup sticky
-    //script(type='text/javascript')
-    //  include ../assets/js/libs/waypoints/lib/shortcuts/sticky.min.js
-    // main app
+    script(type='text/javascript')
+      include ../assets/js/libs/jquery-form/jquery.form.js
     script(type='text/javascript')
       include ../assets/js/app.js
+
+
+      

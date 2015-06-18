@@ -20,7 +20,8 @@ exports.setupSocket = function(socket) {
  */
 exports.postVictim = function(req, res) {
   var hostName = req.body.hostName;
-  var macAddress = req.body.macAddress;
+  var mac = req.body.macAddress;
+  var macAddress = mac.toLowerCase();
   var ssidName = req.body.ssidName;
   var ssidMacAddress = req.body.ssidMacAddress;
   var ssidSignal = req.body.ssidSignal;
@@ -92,9 +93,9 @@ exports.postVictim = function(req, res) {
 function emitVictim(victim, probeRequest, ssid, newVictim) {
   var diff = moment(victim.lastSeen).diff(moment(victim.firstSeen));
   var knownFor = 'Known for '+ moment.duration(diff).humanize() +' ';
-  var on = probeRequest != undefined ? moment(probeRequest.date).format("DD-MM-YY HH:MM:SS") : null;
+  var on = probeRequest != undefined ? moment(probeRequest.date).format("dddd, MMMM Do") : null;
   var what = ssid ? ssid : 'Something';
-  var line = probeRequest != undefined ? 'On '+ on +' Searched for '+ what : null;
+  var line = probeRequest != undefined ? 'On '+ on +' searched for '+ what : 'Today searched for Something';
 
   var updateOrCreate = newVictim ? 'newVictim' : 'updateVictim';
   io.emit(updateOrCreate, {
@@ -145,7 +146,7 @@ exports.getVictims = function(req, res) {
 };
 
 
-exports.getVictimsAsData = function(macAddress, callback) {
+exports.getVictimsAsData = function(callback) {
   //var query = macAddress ? {macAddress: macAddress} : {};
   Victim
     .find()
@@ -166,16 +167,33 @@ exports.getVictimsAsData = function(macAddress, callback) {
  *  @return  Object
  */
 exports.getVictim = function(req, res) {
+  var mac = req.params.mac;
   Victim
-    .findOne({macAddress: req.params.mac})
-    .populate({
-      path: 'probeRequests.ssid',
-      select: 'name -_id'
-    })
+    .findOne({macAddress: mac.toLowerCase()})
     .exec(function(err, victims) {
       if (err)
         res.send(err);
 
+      console.log(victims);
+      res.json(victims);
+    });
+};
+
+
+/**
+ *  Get the information for one victim by his id
+ *  @param   Object request
+ *  @param   Object response
+ *  @return  Object
+ */
+exports.getVictimByID = function(req, res) {
+  Victim
+    .findOne({_id: req.params.id})
+    .exec(function(err, victims) {
+      if (err)
+        res.send(err);
+
+      console.log(victims);
       res.json(victims);
     });
 };
@@ -198,9 +216,28 @@ exports.putVictim = function(req, res) {
  *  @param   Object request
  *  @param   Object response
  *  @return  Object
- */
+ 
 exports.deleteVictim = function(req, res) {
+  var mac = req.params.mac;
   Victim.findByIdAndRemove(req.params.mac, function(err) {
+    if (err)
+      res.send(err);
+
+    console.log('deleting victim with id:', req.params.mac);
+    res.json({ message: 'Victim removed from the server' });
+  });
+  
+};
+*/
+
+/**
+ *  Delete a victim from the database by ID
+ *  @param   Object request
+ *  @param   Object response
+ *  @return  Object
+ */
+exports.deleteVictimByID = function(req, res) {
+  Victim.findByIdAndRemove(req.params.id, function(err) {
     if (err)
       res.send(err);
 
