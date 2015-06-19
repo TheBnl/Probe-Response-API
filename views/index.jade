@@ -48,9 +48,11 @@ html(lang="en")
               ul
                 each probe in victim.probeRequests
                   if probe.ssid
-                    - var on = moment(probe.date).format("dddd, MMMM Do") 
+                    - var on = moment(probe.date).format("dddd, MMMM Do")
+                    - var from = moment(probe.date).from(new Date()); 
+                    - var at = moment(probe.date).format("dddd, MMMM Do")
                     - var ssid = probe.ssid.name ? probe.ssid.name : 'Something'
-                    - var line = 'On '+ on +' searched for '+ ssid 
+                    - var line = from +' searched for '+ ssid 
                     li #{line}
 
     script(src='/socket.io/socket.io.js')

@@ -93,9 +93,10 @@ exports.postVictim = function(req, res) {
 function emitVictim(victim, probeRequest, ssid, newVictim) {
   var diff = moment(victim.lastSeen).diff(moment(victim.firstSeen));
   var knownFor = 'Known for '+ moment.duration(diff).humanize() +' ';
-  var on = probeRequest != undefined ? moment(probeRequest.date).format("dddd, MMMM Do") : null;
+  var from = probeRequest != undefined ? moment(probeRequest.date).from(new Date()) : 'Now'; 
+  //var on = probeRequest != undefined ? moment(probeRequest.date).format("dddd, MMMM Do") : null;
   var what = ssid ? ssid : 'Something';
-  var line = probeRequest != undefined ? 'On '+ on +' searched for '+ what : 'Today searched for Something';
+  var line = from +' searched for '+ what;
 
   var updateOrCreate = newVictim ? 'newVictim' : 'updateVictim';
   io.emit(updateOrCreate, {
@@ -148,13 +149,19 @@ exports.getVictims = function(req, res) {
 
 exports.getVictimsAsData = function(callback) {
   //var query = macAddress ? {macAddress: macAddress} : {};
+  var date = new Date();
+  var today = new Date(date.getFullYear(), date.getMonth(), date.getDate()); // 0
+  var tomorrow = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1); // + 1
   Victim
-    .find()
+    .find({"lastSeen": {"$gte": today, "$lt": tomorrow }})
     .populate('probeRequests.ssid')
     .exec(function(err, victims) {
       if (err)
         console.log(err);
 
+      //console.log(today);
+      //console.log(tomorrow);
+      //console.log(victims);
       callback(victims);
     });
 };

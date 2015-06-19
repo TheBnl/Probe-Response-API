@@ -18,17 +18,20 @@ exports.getResults = function(query, callback) {
   var findBy = query.findby;
   var searchFor = query.searchfor;
   var query = {};
+  var date = new Date();
+  var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  var tomorrow = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
 
   switch(findBy) {
     case "mac":
-      query = {macAddress: new RegExp(searchFor, "i")};
+      query = {'macAddress': new RegExp(searchFor, "i"), 'lastSeen': {"$gte": today, "$lt": tomorrow }};
       break;
     case "ssid":
-      query = {name: new RegExp(searchFor, "i")};
+      query = {'name': new RegExp(searchFor, "i")};
       break;
     default:
     case "host":
-      query = {hostName: new RegExp(searchFor, "i")};
+      query = {'hostName': new RegExp(searchFor, "i"), 'lastSeen': {"$gte": today, "$lt": tomorrow }};
       break;
   }
 
@@ -43,7 +46,10 @@ exports.getResults = function(query, callback) {
         foudSSIDS.push(ssid[i]._id);
       }
 
-      Victim.find({ 'probeRequests.ssid': {$in: foudSSIDS} })
+      Victim.find({ 
+        'probeRequests.ssid': {$in: foudSSIDS}, 
+        'lastSeen': {"$gte": today, "$lt": tomorrow }
+      })
       .populate('probeRequests.ssid')
       .exec(function(err, victims){
         callback(victims);
