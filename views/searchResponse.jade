@@ -19,8 +19,10 @@ if (!dataIsEmpty)
         
         main
           ul
+            - var date = new Date()
+            - var today = new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1)
             each probe in victim.probeRequests
-              if probe.ssid
+              if probe.ssid && probe.date > today
                 - var on = moment(probe.date).format("dddd, MMMM Do")
                 - var from = moment(probe.date).from(new Date()); 
                 - var at = moment(probe.date).format("dddd, MMMM Do")

@@ -93,7 +93,7 @@ exports.postVictim = function(req, res) {
 function emitVictim(victim, probeRequest, ssid, newVictim) {
   var diff = moment(victim.lastSeen).diff(moment(victim.firstSeen));
   var knownFor = 'Known for '+ moment.duration(diff).humanize() +' ';
-  var from = probeRequest != undefined ? moment(probeRequest.date).from(new Date()) : 'Now'; 
+  var from = probeRequest != undefined ? moment(probeRequest.date).from(new Date()) : 'a few seconds ago'; 
   //var on = probeRequest != undefined ? moment(probeRequest.date).format("dddd, MMMM Do") : null;
   var what = ssid ? ssid : 'Something';
   var line = from +' searched for '+ what;
@@ -151,9 +151,9 @@ exports.getVictimsAsData = function(callback) {
   //var query = macAddress ? {macAddress: macAddress} : {};
   var date = new Date();
   var today = new Date(date.getFullYear(), date.getMonth(), date.getDate()); // 0
-  var tomorrow = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1); // + 1
+  //var tomorrow = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1); // + 1
   Victim
-    .find({"lastSeen": {"$gte": today, "$lt": tomorrow }})
+    .find({"lastSeen": {"$gte": today }})
     .populate('probeRequests.ssid')
     .exec(function(err, victims) {
       if (err)
